@@ -1,0 +1,77 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class player : MonoBehaviour
+{
+    public float forcaPulo;
+    public float velocidadeMaxima;
+
+    public int  lives;
+    public int rings;
+
+    public Text TextLives;
+    public Text TextRings;
+
+    public bool isGrounded;
+    // Start is called before the first frame update
+    void Start()
+    {
+        TextLives.text = lives.ToString();
+        TextRings.text = lives.ToString();  
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        Rigidbody2D rigidbody = GetComponent<Rigidbody2D>();
+        float  movimento = Input.GetAxis("Horizontal");
+       
+        rigidbody.velocity = new Vector2(movimento *velocidadeMaxima, rigidbody.velocity.y);
+
+        if(movimento < 0)
+        {
+            GetComponent<SpriteRenderer>().flipX = true;
+        }
+        else if(movimento>0)
+        {
+            GetComponent<SpriteRenderer>().flipX = false;
+        }
+
+        if (movimento > 0 || movimento < 0)
+        {
+            GetComponent<Animator>().SetBool("walking", true);
+
+        }
+        else
+        {
+            GetComponent<Animator>().SetBool("walking", false);
+
+        }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            rigidbody.AddForce(new Vector2(0, forcaPulo));
+            GetComponent<AudioSource>().Play();
+        }
+
+    }
+     void OnCollisionEnter2D(Collision2D collision2D)
+    {
+      if(Collision2D.gameObject.CompareTag("Monstros"))
+        {
+            //Criar lógica para perder vida
+        }
+      if ( Collision2D.gameObject.CompareTag("Plataformas"))
+        {
+            //
+        }
+      if(Collision2D.gameObject.CompareTag("Moedas"))
+        {
+            //Adicionar moedas
+        }
+    }
+    private void OnCollisionExit2D(Collision2D collision2D)
+    {
+        Debug.Log("Parou de colidir!"+collision2D.gameObject.tag);
+    }
+}

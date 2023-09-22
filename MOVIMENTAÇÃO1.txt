@@ -1,0 +1,70 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class Player : MonoBehaviour
+{
+    private Rigidbody2D rb; 
+    private Transform tr;
+    private Animator an;
+
+    public bool isWalking;
+    public bool facingRight;
+
+    private float axis;
+    public float vel;
+
+    public float jumpForce;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        rb = GetComponent<Rigidbody2D>(); 
+        tr = GetComponent<Transform>();
+        an = GetComponent<Animator>();
+        facingRight = true;
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        axis = Input.GetAxisRaw("Horizontal");
+        isWalking = Mathf.Abs(axis) > 0f;
+
+        if(axis > 0f && !facingRight)
+        {
+            Flip();
+        }
+        else if(axis < 0f && facingRight)
+        {
+            Flip();
+        }
+
+        if(isWalking && facingRight)
+        {
+            rb.velocity = new Vector2(vel, rb.velocity.y);
+        }
+        else if (isWalking && !facingRight)
+        {
+            rb.velocity = new Vector2(-vel, rb.velocity.y);
+        }
+        Animation();
+
+        if(Input.GetButtonDown("Jump"))
+            {
+            rb.AddForce(tr.up*jumpForce);
+
+        }
+
+    }
+    void Flip()
+    {
+        facingRight = !facingRight;
+        tr.localScale = new Vector2(-tr.localScale.x, tr.localScale.y);
+
+    } 
+    void Animation()
+    {
+        an.SetBool("Walking",isWalking);
+    }
+}
